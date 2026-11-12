@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> loggedRaces = new ArrayList<>();
-    private double[] championWeights = {0.40, 0.25, 0.20, 0.15};
-    private double[] challengerWeights = {0.40, 0.25, 0.20, 0.15};
+    private double champW1 = 0.40, champW2 = 0.25, champW3 = 0.20, champW4 = 0.15;
+    private double challW1 = 0.40, challW2 = 0.25, challW3 = 0.20, challW4 = 0.15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +59,16 @@ public class MainActivity extends AppCompatActivity {
             double impliedMarketProb = (1.0 / decimalOdds) * 100.0;
 
             double probEngineA = 12.0;
-            if (chkRank1.isChecked()) probEngineA += (championWeights[0] * 100.0);
-            if (chkRank2.isChecked()) probEngineA += (championWeights[1] * 100.0);
-            if (chkRank3.isChecked()) probEngineA += (championWeights[2] * 100.0);
-            if (chkRank4.isChecked()) probEngineA += (championWeights[3] * 100.0);
+            if (chkRank1.isChecked()) probEngineA += (champW1 * 100.0);
+            if (chkRank2.isChecked()) probEngineA += (champW2 * 100.0);
+            if (chkRank3.isChecked()) probEngineA += (champW3 * 100.0);
+            if (chkRank4.isChecked()) probEngineA += (champW4 * 100.0);
 
             double probEngineB = 12.0;
-            if (chkRank1.isChecked()) probEngineB += (challengerWeights[0] * 100.0);
-            if (chkRank2.isChecked()) probEngineB += (challengerWeights[1] * 100.0);
-            if (chkRank3.isChecked()) probEngineB += (challengerWeights[2] * 100.0);
-            if (chkRank4.isChecked()) probEngineB += (challengerWeights[3] * 100.0);
+            if (chkRank1.isChecked()) probEngineB += (challW1 * 100.0);
+            if (chkRank2.isChecked()) probEngineB += (challW2 * 100.0);
+            if (chkRank3.isChecked()) probEngineB += (challW3 * 100.0);
+            if (chkRank4.isChecked()) probEngineB += (challW4 * 100.0);
 
             if (radBoostTypeA.isChecked()) probEngineB -= 5.0;
             if (radBoostTypeB.isChecked()) probEngineB -= 15.0;
@@ -99,12 +99,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnLock.setOnClickListener(v -> {
-            System.arraycopy(challengerWeights, 0, championWeights, 0, challengerWeights.length);
+            champW1 = challW1;
+            champW2 = challW2;
+            champW3 = challW3;
+            champW4 = challW4;
             Toast.makeText(this, "Engine B locked as new Champion Baseline!", Toast.LENGTH_SHORT).show();
         });
 
         btnRevert.setOnClickListener(v -> {
-            System.arraycopy(championWeights, 0, challengerWeights, 0, championWeights.length);
+            challW1 = champW1;
+            challW2 = champW2;
+            challW3 = champW3;
+            challW4 = champW4;
             Toast.makeText(this, "Engine B reverted to Locked Baseline!", Toast.LENGTH_SHORT).show();
         });
     }
