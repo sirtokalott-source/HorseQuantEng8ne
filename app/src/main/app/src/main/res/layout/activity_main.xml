@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://android.com"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HORSE QUANT ENGINE (A/B VERSION)"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/txtValidationBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GATING FILTER: ACTIVE (P &gt; M VALUE ONLY)"
+            android:textColor="#4CAF50"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="#1B5E20"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/inputHorseName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Horse Name &amp; Race Time"
+            android:textColorHint="#757575"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF9800"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/inputMarketOdds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Decimal Odds (e.g. 2.87)"
+            android:textColorHint="#757575"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF9800"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CORE PARAMETER WEIGHTS:"
+            android:textColor="#FF9800"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <CheckBox
+            android:id="@+id/chkRank1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rank 1 (40%): Mid-Tier Travel Radial (&gt;175mi)"
+            android:textColor="#FFFFFF"/>
+
+        <CheckBox
+            android:id="@+id/chkRank2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rank 2 (25%): Course &amp; Distance Specialism"
+            android:textColor="#FFFFFF"/>
+
+        <CheckBox
+            android:id="@+id/chkRank3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rank 3 (20%): GoingStick Penetrometer Match"
+            android:textColor="#FFFFFF"/>
+
+        <CheckBox
+            android:id="@+id/chkRank4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rank 4 (15%): Jumping Fluency / Class Baseline"
+            android:textColor="#FFFFFF"/>
+
+        <Switch
+            android:id="@+id/swtSafetyEw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Allow Break-Even E/W Safety Net (6.00 - 6.50)"
+            android:textColor="#03A9F4"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <RadioGroup
+            android:id="@+id/grpBoostType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+            <RadioButton
+                android:id="@+id/radNoBoost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Standard Price (No Pre-Bet Bookie Boost)"
+                android:textColor="#FFFFFF"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/radBoostTypeA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Type A Boost: Liability Shifter (-5% Engine B Penalty)"
+                android:textColor="#FFFFFF"/>
+            <RadioButton
+                android:id="@+id/radBoostTypeB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Type B Boost: High-Variance Trap (-15% Engine B Penalty)"
+                android:textColor="#FFFFFF"/>
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnVerifyAndCalculate"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="VERIFY SELECTION &amp; RUN A/B ENGINES"
+            android:backgroundTint="#FF9800"
+            android:textColor="#121212"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/txtFinalOutput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Awaiting Race Input..."
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:padding="16dp"
+            android:background="#1E1E1E"
+            android:layout_marginBottom="16dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <Button
+                android:id="@+id/btnLockBaseline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="LOCK BASELINE"
+                android:backgroundTint="#4CAF50"
+                android:textColor="#FFFFFF"
+                android:layout_marginRight="4dp"/>
+            <Button
+                android:id="@+id/btnRevertSystem"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="REVERT BASELINE"
+                android:backgroundTint="#F44336"
+                android:textColor="#FFFFFF"
+                android:layout_marginLeft="4dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
