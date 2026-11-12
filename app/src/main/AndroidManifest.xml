@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://android.com">
 
-
     <application
         android:allowBackup="true"
         android:label="HorseQuantEngine"
