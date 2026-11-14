@@ -13,164 +13,134 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="HORSE QUANT ENGINE (A/B VERSION)"
+            android:text="HORSE QUANT ENGINE v2.0 (AUTONOMOUS)"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="8dp"/>
 
         <TextView
-            android:id="@+id/txtValidationBanner"
+            android:id="@+id/txtAutoScheduleStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="GATING FILTER: ACTIVE (P &gt; M VALUE ONLY)"
+            android:text="AUTO-SCAN: 07:30 DAILY | AUTO-AUDIT: +1HR POST-LAST RACE"
             android:textColor="#4CAF50"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold"
             android:gravity="center"
             android:padding="8dp"
             android:background="#1B5E20"
-            android:layout_marginBottom="16dp"/>
-
-        <EditText
-            android:id="@+id/inputHorseName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Horse Name &amp; Race Time"
-            android:textColorHint="#757575"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#FF9800"
             android:layout_marginBottom="12dp"/>
-
-        <EditText
-            android:id="@+id/inputMarketOdds"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Decimal Odds (e.g. 2.87)"
-            android:textColorHint="#757575"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#FF9800"
-            android:inputType="numberDecimal"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="CORE PARAMETER WEIGHTS:"
-            android:textColor="#FF9800"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <CheckBox
-            android:id="@+id/chkRank1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Rank 1 (40%): Mid-Tier Travel Radial (&gt;175mi)"
-            android:textColor="#FFFFFF"/>
-
-        <CheckBox
-            android:id="@+id/chkRank2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            :text="Rank 2 (25%): Course &amp; Distance Specialism"
-            android:textColor="#FFFFFF"/>
-
-        <CheckBox
-            android:id="@+id/chkRank3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Rank 3 (20%): GoingStick Penetrometer Match"
-            android:textColor="#FFFFFF"/>
-
-        <CheckBox
-            android:id="@+id/chkRank4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Rank 4 (15%): Jumping Fluency / Class Baseline"
-            android:textColor="#FFFFFF"/>
-
-        <Switch
-            android:id="@+id/swtSafetyEw"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Allow Break-Even E/W Safety Net (6.00 - 6.50)"
-            android:textColor="#03A9F4"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"/>
-
-        <RadioGroup
-            android:id="@+id/grpBoostType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
-            <RadioButton
-                android:id="@+id/radNoBoost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Standard Price (No Pre-Bet Bookie Boost)"
-                android:textColor="#FFFFFF"
-                android:checked="true"/>
-            <RadioButton
-                android:id="@+id/radBoostTypeA"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Type A Boost: Liability Shifter (-5% Engine B Penalty)"
-                android:textColor="#FFFFFF"/>
-            <RadioButton
-                android:id="@+id/radBoostTypeB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Type B Boost: High-Variance Trap (-15% Engine B Penalty)"
-                android:textColor="#FFFFFF"/>
-        </RadioGroup>
-
-        <Button
-            android:id="@+id/btnVerifyAndCalculate"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:text="VERIFY SELECTION &amp; RUN A/B ENGINES"
-            android:backgroundTint="#FF9800"
-            android:textColor="#121212"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:id="@+id/txtFinalOutput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Awaiting Race Input..."
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:padding="16dp"
-            android:background="#1E1E1E"
-            android:layout_marginBottom="16dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2">
-            <Button
-                android:id="@+id/btnLockBaseline"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="LOCK BASELINE"
-                android:backgroundTint="#4CAF50"
-                android:textColor="#FFFFFF"
-                android:layout_marginRight="4dp"/>
-            <Button
-                android:id="@+id/btnRevertSystem"
-                android:layout_width="0dp"
+                android:text="Extra Sub-Threshold Picks (0 = Pure Core Only):"
+                android:textColor="#BDBDBD"
+                android:textSize="13sp"/>
+
+            <EditText
+                android:id="@+id/inputExtraSubPicks"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="REVERT BASELINE"
-                android:backgroundTint="#F44336"
+                android:text="0"
+                android:gravity="center"
                 android:textColor="#FFFFFF"
-                android:layout_marginLeft="4dp"/>
+                android:backgroundTint="#FF9800"
+                android:inputType="number"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btnScanMarkets"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="SCAN TODAY'S MARKETS NOW"
+            android:backgroundTint="#FF9800"
+            android:textColor="#121212"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CORE ENGINE A QUALIFIERS (RANKED #1 BEST FIRST):"
+            android:textColor="#4CAF50"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/containerCorePicks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/txtSubThresholdHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚠️ SUB-THRESHOLD ALTERNATIVES (EXCLUDED FROM MODEL DATA):"
+            android:textColor="#FF5252"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/containerSubPicks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="AUTONOMOUS A/B SCOREBOARD &amp; 50-RACE GATE:"
+            android:textColor="#03A9F4"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp"/>
+
+        <TextView
+            android:id="@+id/txtScoreboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Engine A (Champion): Win Rate --% | ROI --%\nEngine B (Challenger): Win Rate --% | ROI --%\n50-Race Sample Gate: 0 / 50 Audited Races"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:padding="12dp"
+            android:background="#1E1E1E"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SYSTEM UPDATE &amp; AUDIT LOG:"
+            android:textColor="#FF9800"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp"/>
+
+        <TextView
+            android:id="@+id/txtSystemLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="[System Ready] Daily 07:30 Auto-Scan &amp; +1Hr Post-Race Audit Active."
+            android:textColor="#BDBDBD"
+            android:textSize="12sp"
+            android:padding="12dp"
+            android:background="#1E1E1E"/>
 
     </LinearLayout>
 </ScrollView>
