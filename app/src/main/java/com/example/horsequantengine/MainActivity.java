@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -32,65 +31,29 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "HorseQuantPrefsV2";
     private SharedPreferences prefs;
 
-    private LinearLayout containerCorePicks;
-    private LinearLayout containerSubPicks;
-    private TextView txtSubThresholdHeader;
-    private TextView txtScoreboard;
-    private TextView txtSystemLog;
+    private LinearLayout containerCorePicks, containerSubPicks;
+    private TextView txtSubThresholdHeader, txtScoreboard, txtSystemLog;
     private EditText inputExtraSubPicks;
-
     private List<RunnerCandidate> dailySlate = new ArrayList<>();
 
     static class RunnerCandidate {
-        String raceId;
-        String raceTimeTrack;
-        String horseName;
-        double decimalOdds;
-        String formString;
-        int daysOff;
-        String weightInfo;
-        int rpr;
-        int ts;
-        boolean rank1Travel;
-        boolean rank2CourseDist;
-        boolean rank3GoingStick;
-        boolean rank4JumpClass;
-        boolean hasFitnessPenalty;
-        boolean hasWeightPenalty;
-        boolean hasPaceEdge;
-        boolean hasSteamEdge;
-        boolean hasSynergyEdge;
-        boolean hasDrawEdge;
+        String raceId, raceTimeTrack, horseName, formString, weightInfo;
+        double decimalOdds, edgeA, edgeB, probA, probB;
+        int daysOff, rpr, ts;
+        boolean rank1Travel, rank2CourseDist, rank3GoingStick, rank4JumpClass;
+        boolean hasFitnessPenalty, hasWeightPenalty, hasPaceEdge, hasSteamEdge, hasSynergyEdge, hasDrawEdge;
         boolean voidedByUser = false;
-
-        double edgeA;
-        double edgeB;
-        double probA;
-        double probB;
 
         RunnerCandidate(String raceId, String raceTimeTrack, String horseName, double decimalOdds,
                         String formString, int daysOff, String weightInfo, int rpr, int ts,
                         boolean r1, boolean r2, boolean r3, boolean r4,
                         boolean fitPen, boolean wgtPen, boolean pace, boolean steam, boolean syn, boolean draw) {
-            this.raceId = raceId;
-            this.raceTimeTrack = raceTimeTrack;
-            this.horseName = horseName;
-            this.decimalOdds = decimalOdds;
-            this.formString = formString;
-            this.daysOff = daysOff;
-            this.weightInfo = weightInfo;
-            this.rpr = rpr;
-            this.ts = ts;
-            this.rank1Travel = r1;
-            this.rank2CourseDist = r2;
-            this.rank3GoingStick = r3;
-            this.rank4JumpClass = r4;
-            this.hasFitnessPenalty = fitPen;
-            this.hasWeightPenalty = wgtPen;
-            this.hasPaceEdge = pace;
-            this.hasSteamEdge = steam;
-            this.hasSynergyEdge = syn;
-            this.hasDrawEdge = draw;
+            this.raceId = raceId; this.raceTimeTrack = raceTimeTrack; this.horseName = horseName;
+            this.decimalOdds = decimalOdds; this.formString = formString; this.daysOff = daysOff;
+            this.weightInfo = weightInfo; this.rpr = rpr; this.ts = ts;
+            this.rank1Travel = r1; this.rank2CourseDist = r2; this.rank3GoingStick = r3; this.rank4JumpClass = r4;
+            this.hasFitnessPenalty = fitPen; this.hasWeightPenalty = wgtPen;
+            this.hasPaceEdge = pace; this.hasSteamEdge = steam; this.hasSynergyEdge = syn; this.hasDrawEdge = draw;
         }
     }
 
@@ -98,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         initializeDefaultWeights();
 
@@ -119,64 +81,38 @@ public class MainActivity extends AppCompatActivity {
             scheduleOneHourPostRaceAudit(16, 0);
         });
     }
-
     private void initializeDefaultWeights() {
         if (!prefs.contains("champW1")) {
             prefs.edit()
-                    .putFloat("champW1", 0.40f)
-                    .putFloat("champW2", 0.25f)
-                    .putFloat("champW3", 0.20f)
-                    .putFloat("champW4", 0.15f)
-                    .putFloat("backupW1", 0.40f)
-                    .putFloat("backupW2", 0.25f)
-                    .putFloat("backupW3", 0.20f)
-                    .putFloat("backupW4", 0.15f)
-                    .putFloat("challW1", 0.40f)
-                    .putFloat("challW2", 0.25f)
-                    .putFloat("challW3", 0.20f)
-                    .putFloat("challW4", 0.15f)
-                    .putInt("sampleCount", 4)
-                    .putInt("winsA", 3)
-                    .putFloat("profitA", 6.25f)
-                    .putInt("winsB", 3)
-                    .putFloat("profitB", 6.50f)
-                    .putInt("postPromoCount", 0)
+                    .putFloat("champW1", 0.40f).putFloat("champW2", 0.25f)
+                    .putFloat("champW3", 0.20f).putFloat("champW4", 0.15f)
+                    .putFloat("backupW1", 0.40f).putFloat("backupW2", 0.25f)
+                    .putFloat("backupW3", 0.20f).putFloat("backupW4", 0.15f)
+                    .putFloat("challW1", 0.40f).putFloat("challW2", 0.25f)
+                    .putFloat("challW3", 0.20f).putFloat("challW4", 0.15f)
+                    .putInt("sampleCount", 4).putInt("winsA", 3).putFloat("profitA", 6.25f)
+                    .putInt("winsB", 3).putFloat("profitB", 6.50f).putInt("postPromoCount", 0)
                     .apply();
         }
     }
 
     private void runMarketEvaluation() {
         loadTodayMarketFeed();
-
-        float cW1 = prefs.getFloat("champW1", 0.40f);
-        float cW2 = prefs.getFloat("champW2", 0.25f);
-        float cW3 = prefs.getFloat("champW3", 0.20f);
-        float cW4 = prefs.getFloat("champW4", 0.15f);
-
-        float bW1 = prefs.getFloat("challW1", 0.40f);
-        float bW2 = prefs.getFloat("challW2", 0.25f);
-        float bW3 = prefs.getFloat("challW3", 0.20f);
-        float bW4 = prefs.getFloat("challW4", 0.15f);
+        float cW1 = prefs.getFloat("champW1", 0.40f), cW2 = prefs.getFloat("champW2", 0.25f);
+        float cW3 = prefs.getFloat("champW3", 0.20f), cW4 = prefs.getFloat("champW4", 0.15f);
+        float bW1 = prefs.getFloat("challW1", 0.40f), bW2 = prefs.getFloat("challW2", 0.25f);
+        float bW3 = prefs.getFloat("challW3", 0.20f), bW4 = prefs.getFloat("challW4", 0.15f);
 
         List<RunnerCandidate> validCore = new ArrayList<>();
         List<RunnerCandidate> subThreshold = new ArrayList<>();
 
         for (RunnerCandidate r : dailySlate) {
             if (r.voidedByUser) continue;
-
             double impliedM = (1.0 / r.decimalOdds) * 100.0;
-
-            double pA = 12.0;
-            if (r.rank1Travel) pA += cW1 * 100.0;
-            if (r.rank2CourseDist) pA += cW2 * 100.0;
-            if (r.rank3GoingStick) pA += cW3 * 100.0;
-            if (r.rank4JumpClass) pA += cW4 * 100.0;
-
-            double pB = 12.0;
-            if (r.rank1Travel) pB += bW1 * 100.0;
-            if (r.rank2CourseDist) pB += bW2 * 100.0;
-            if (r.rank3GoingStick) pB += bW3 * 100.0;
-            if (r.rank4JumpClass) pB += bW4 * 100.0;
+            double pA = 12.0 + (r.rank1Travel ? cW1 * 100 : 0) + (r.rank2CourseDist ? cW2 * 100 : 0)
+                    + (r.rank3GoingStick ? cW3 * 100 : 0) + (r.rank4JumpClass ? cW4 * 100 : 0);
+            double pB = 12.0 + (r.rank1Travel ? bW1 * 100 : 0) + (r.rank2CourseDist ? bW2 * 100 : 0)
+                    + (r.rank3GoingStick ? bW3 * 100 : 0) + (r.rank4JumpClass ? bW4 * 100 : 0);
 
             if (r.hasFitnessPenalty) pB -= 12.0;
             if (r.hasWeightPenalty) pB -= 8.0;
@@ -185,16 +121,9 @@ public class MainActivity extends AppCompatActivity {
             if (r.hasSynergyEdge) pB += 4.0;
             if (r.hasDrawEdge) pB += 4.0;
 
-            r.probA = pA;
-            r.probB = pB;
-            r.edgeA = pA - impliedM;
-            r.edgeB = pB - impliedM;
-
-            if (r.edgeA > 0 && !r.hasFitnessPenalty) {
-                validCore.add(r);
-            } else {
-                subThreshold.add(r);
-            }
+            r.probA = pA; r.probB = pB; r.edgeA = pA - impliedM; r.edgeB = pB - impliedM;
+            if (r.edgeA > 0 && !r.hasFitnessPenalty) validCore.add(r);
+            else subThreshold.add(r);
         }
 
         Collections.sort(validCore, (a, b) -> Double.compare(b.edgeA, a.edgeA));
@@ -208,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
                 usedRaces.add(r.raceId);
             }
         }
-
         renderPicksUI(finalCoreZeroOverlap, subThreshold);
     }
 
@@ -223,21 +151,17 @@ public class MainActivity extends AppCompatActivity {
             containerCorePicks.addView(empty);
         } else {
             for (int i = 0; i < corePicks.size(); i++) {
-                RunnerCandidate r = corePicks.get(i);
-                containerCorePicks.addView(buildRunnerCard(r, i + 1, true));
+                containerCorePicks.addView(buildRunnerCard(corePicks.get(i), i + 1, true));
             }
         }
 
         int extraRequested = 0;
-        try {
-            extraRequested = Integer.parseInt(inputExtraSubPicks.getText().toString().trim());
-        } catch (NumberFormatException ignored) {}
+        try { extraRequested = Integer.parseInt(inputExtraSubPicks.getText().toString().trim()); } catch (Exception ignored) {}
 
         if (extraRequested > 0 && !subPicks.isEmpty()) {
             txtSubThresholdHeader.setVisibility(View.VISIBLE);
             containerSubPicks.setVisibility(View.VISIBLE);
-            int limit = Math.min(extraRequested, subPicks.size());
-            for (int i = 0; i < limit; i++) {
+            for (int i = 0; i < Math.min(extraRequested, subPicks.size()); i++) {
                 containerSubPicks.addView(buildRunnerCard(subPicks.get(i), i + 1, false));
             }
         } else {
@@ -245,167 +169,122 @@ public class MainActivity extends AppCompatActivity {
             containerSubPicks.setVisibility(View.GONE);
         }
     }
-
     private View buildRunnerCard(RunnerCandidate r, int rankOrder, boolean isCore) {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setBackgroundColor(isCore ? Color.parseColor("#1E1E1E") : Color.parseColor("#2A1616"));
         card.setPadding(24, 20, 24, 20);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         params.setMargins(0, 0, 0, 16);
         card.setLayoutParams(params);
 
-        String betAction;
-        if (!isCore) {
-            betAction = "SUB-THRESHOLD: EXCLUDED FROM TRAINING DATA";
-        } else if (r.decimalOdds >= 7.0) {
-            betAction = "£1.00 EACH-WAY (£2.00 TOTAL) — PROFIT E/W";
-        } else {
-            betAction = "£2.00 STRAIGHT WIN (BOG ACTIVE)";
+        String betAction = !isCore ? "SUB-THRESHOLD: EXCLUDED FROM TRAINING DATA"
+                : (r.decimalOdds >= 7.0 ? "£1.00 EACH-WAY (£2.00 TOTAL) — PROFIT E/W" : "£2.00 STRAIGHT WIN (BOG ACTIVE)");
+
+        TextView title = new TextView(this);
+        title.setText("#" + rankOrder + " | " + r.raceTimeTrack + " — " + r.horseName.toUpperCase() + " (@ " + String.format(Locale.UK, "%.2f", r.decimalOdds) + ")");
+        title.setTextColor(isCore ? Color.parseColor("#FF9800") : Color.parseColor("#FF5252"));
+        title.setTextSize(15f);
+        card.addView(title);
+
+        TextView formLine = new TextView(this);
+        formLine.setText("FORM: " + r.formString + " (" + r.daysOff + "d off) | WGT: " + r.weightInfo + " | RPR " + r.rpr + " / TS " + r.ts);
+        formLine.setTextColor(Color.parseColor("#81D4FA"));
+        formLine.setTextSize(12f);
+        card.addView(formLine);
+
+        TextView metrics = new TextView(this);
+        metrics.setText(String.format(Locale.UK, "Engine A: %.1f%% (Edge %+.1f%%) | Engine B: %.1f%% (Edge %+.1f%%)\nVERDICT: %s",
+                r.probA, r.edgeA, r.probB, r.edgeB, betAction));
+        metrics.setTextColor(Color.WHITE);
+        metrics.setTextSize(13f);
+        card.addView(metrics);
+
+        if (isCore) {
+            Button btnProblem = new Button(this);
+            btnProblem.setText("PROBLEM / RECHECK THIS RACE");
+            btnProblem.setBackgroundColor(Color.parseColor("#D32F2F"));
+            btnProblem.setTextColor(Color.WHITE);
+            btnProblem.setTextSize(11f);
+            btnProblem.setOnClickListener(v -> {
+                r.voidedByUser = true;
+                appendLog("VOIDED: " + r.horseName + " flagged. Re-evaluating " + r.raceTimeTrack + "...");
+                runMarketEvaluation();
+            });
+            card.addView(btnProblem);
         }
+        return card;
+    }
 
-    public void evaluateAutonomous50RaceGate() {
-        int samples = prefs.getInt("sampleCount", 0);
-        float profitA = prefs.getFloat("profitA", 0f);
-        float profitB = prefs.getFloat("profitB", 0f);
-        int postPromo = prefs.getInt("postPromoCount", 0);
-
-        if (postPromo >= 25 && profitA < 0f) {
-            prefs.edit()
-                    .putFloat("champW1", prefs.getFloat("backupW1", 0.40f))
-                    .putFloat("champW2", prefs.getFloat("backupW2", 0.25f))
-                    .putFloat("champW3", prefs.getFloat("backupW3", 0.20f))
-                    .putFloat("champW4", prefs.getFloat("backupW4", 0.15f))
-                    .putInt("postPromoCount", 0)
-                    .apply();
-            appendLog("AUTO-ROLLBACK: Engine A dipped below profit floor over 25 races. Reverted to previous Champion snapshot.");
-        }
-
-        if (samples >= 50) {
-            if (profitB > profitA) {
-                float oldW1 = prefs.getFloat("champW1", 0.40f);
-                float oldW2 = prefs.getFloat("champW2", 0.25f);
-                float oldW3 = prefs.getFloat("champW3", 0.20f);
-                float oldW4 = prefs.getFloat("champW4", 0.15f);
-
-                float newW1 = prefs.getFloat("challW1", 0.40f);
-                float newW2 = prefs.getFloat("challW2", 0.25f);
-                float newW3 = prefs.getFloat("challW3", 0.20f);
-                float newW4 = prefs.getFloat("challW4", 0.15f);
-
-                prefs.edit()
-                        .putFloat("backupW1", oldW1).putFloat("backupW2", oldW2)
-                        .putFloat("backupW3", oldW3).putFloat("backupW4", oldW4)
-                        .putFloat("champW1", newW1).putFloat("champW2", newW2)
-                        .putFloat("champW3", newW3).putFloat("champW4", newW4)
-                        .putFloat("challW1", Math.min(0.45f, newW1 + 0.02f))
-                        .putFloat("challW2", Math.max(0.15f, newW2 - 0.02f))
-                        .putInt("sampleCount", 0)
-                        .putInt("postPromoCount", 1)
-                        .apply();
-                appendLog("AUTO-PROMOTION (50/50 GATE): Engine B outperformed Engine A! Promoted to new Champion & diverged Engine B.");
-            } else {
-                prefs.edit().putInt("sampleCount", 0).apply();
-                appendLog("50-RACE REVIEW: Engine A retained Champion status. Engine B recalibrating for next 50 races.");
-            }
-        }
-        refreshScoreboardAndLog();
+    private void loadTodayMarketFeed() {
+        if (!dailySlate.isEmpty()) return;
+        dailySlate.add(new RunnerCandidate("WETH_1320", "13:20 Wetherby", "Florida Dreams", 3.00,
+                "366-81", 15, "10st 12lb", 128, 118, true, true, true, true, false, false, true, true, true, false));
+        dailySlate.add(new RunnerCandidate("CHEL_1420", "14:20 Cheltenham", "Zurich", 9.50,
+                "1352-5", 27, "10st 11lb", 144, 131, true, true, true, false, false, false, true, false, true, false));
+        dailySlate.add(new RunnerCandidate("CHEL_1235", "12:35 Cheltenham", "Little Ledgend", 3.75,
+                "-22113", 22, "11st 2lb", 138, 126, false, false, true, false, false, false, false, false, false, false));
     }
 
     private void scheduleDailyMorningAutoScan() {
         Calendar now = Calendar.getInstance();
         Calendar target = Calendar.getInstance();
-        target.set(Calendar.HOUR_OF_DAY, 7);
-        target.set(Calendar.MINUTE, 30);
-        target.set(Calendar.SECOND, 0);
-        if (target.before(now)) {
-            target.add(Calendar.DAY_OF_YEAR, 1);
-        }
-        long initialDelay = target.getTimeInMillis() - now.getTimeInMillis();
+        target.set(Calendar.HOUR_OF_DAY, 7); target.set(Calendar.MINUTE, 30); target.set(Calendar.SECOND, 0);
+        if (target.before(now)) target.add(Calendar.DAY_OF_YEAR, 1);
 
         PeriodicWorkRequest dailyScan = new PeriodicWorkRequest.Builder(DailyMarketScanWorker.class, 24, TimeUnit.HOURS)
-                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
-                .build();
-
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "Daily0730MarketScan", ExistingPeriodicWorkPolicy.KEEP, dailyScan);
+                .setInitialDelay(target.getTimeInMillis() - now.getTimeInMillis(), TimeUnit.MILLISECONDS).build();
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork("Daily0730MarketScan", ExistingPeriodicWorkPolicy.KEEP, dailyScan);
     }
 
     private void scheduleOneHourPostRaceAudit(int lastRaceHour, int lastRaceMinute) {
         Calendar now = Calendar.getInstance();
         Calendar auditTime = Calendar.getInstance();
-        auditTime.set(Calendar.HOUR_OF_DAY, lastRaceHour + 1);
-        auditTime.set(Calendar.MINUTE, lastRaceMinute);
-        auditTime.set(Calendar.SECOND, 0);
+        auditTime.set(Calendar.HOUR_OF_DAY, lastRaceHour + 1); auditTime.set(Calendar.MINUTE, lastRaceMinute); auditTime.set(Calendar.SECOND, 0);
 
-        long delayMs = Math.max(60000L, auditTime.getTimeInMillis() - now.getTimeInMillis());
         OneTimeWorkRequest auditRequest = new OneTimeWorkRequest.Builder(PostRaceAuditWorker.class)
-                .setInitialDelay(delayMs, TimeUnit.MILLISECONDS)
-                .build();
+                .setInitialDelay(Math.max(60000L, auditTime.getTimeInMillis() - now.getTimeInMillis()), TimeUnit.MILLISECONDS).build();
         WorkManager.getInstance(this).enqueue(auditRequest);
     }
 
     private void refreshScoreboardAndLog() {
-        int samples = prefs.getInt("sampleCount", 4);
-        int winsA = prefs.getInt("winsA", 3);
-        float profitA = prefs.getFloat("profitA", 6.25f);
-        int winsB = prefs.getInt("winsB", 3);
-        float profitB = prefs.getFloat("profitB", 6.50f);
-
-        double winRateA = samples > 0 ? (winsA * 100.0 / samples) : 0.0;
-        double roiA = samples > 0 ? (profitA * 100.0 / (samples * 2.0)) : 0.0;
-        double winRateB = samples > 0 ? (winsB * 100.0 / samples) : 0.0;
-        double roiB = samples > 0 ? (profitB * 100.0 / (samples * 2.0)) : 0.0;
+        int samples = prefs.getInt("sampleCount", 4), winsA = prefs.getInt("winsA", 3), winsB = prefs.getInt("winsB", 3);
+        float profitA = prefs.getFloat("profitA", 6.25f), profitB = prefs.getFloat("profitB", 6.50f);
 
         txtScoreboard.setText(String.format(Locale.UK,
                 "Engine A (Champion): Win Rate %.1f%% | Net ROI %+.1f%% (%+.2f pts)\n" +
                 "Engine B (Challenger): Win Rate %.1f%% | Net ROI %+.1f%% (%+.2f pts)\n" +
                 "Autonomous 50-Race Gate: %d / 50 Audited Races",
-                winRateA, roiA, profitA, winRateB, roiB, profitB, samples));
-
-        String savedLog = prefs.getString("systemLog", "[System Ready] Daily 07:30 Auto-Scan & +1Hr Post-Race Audit Active.");
-        txtSystemLog.setText(savedLog);
+                samples > 0 ? (winsA * 100.0 / samples) : 0.0, samples > 0 ? (profitA * 100.0 / (samples * 2.0)) : 0.0, profitA,
+                samples > 0 ? (winsB * 100.0 / samples) : 0.0, samples > 0 ? (profitB * 100.0 / (samples * 2.0)) : 0.0, profitB, samples));
+        txtSystemLog.setText(prefs.getString("systemLog", "[System Ready] Daily 07:30 Auto-Scan & +1Hr Post-Race Audit Active."));
     }
 
     private void appendLog(String msg) {
         String time = new SimpleDateFormat("dd/MM HH:mm", Locale.UK).format(new Date());
-        String existing = prefs.getString("systemLog", "");
-        String updated = "[" + time + "] " + msg + "\n" + existing;
+        String updated = "[" + time + "] " + msg + "\n" + prefs.getString("systemLog", "");
         if (updated.length() > 2500) updated = updated.substring(0, 2500);
         prefs.edit().putString("systemLog", updated).apply();
         refreshScoreboardAndLog();
     }
 
     public static class DailyMarketScanWorker extends Worker {
-        public DailyMarketScanWorker(@NonNull Context context, @NonNull WorkerParameters params) {
-            super(context, params);
-        }
-
-        @NonNull
-        @Override
-        public Result doWork() {
+        public DailyMarketScanWorker(@NonNull Context context, @NonNull WorkerParameters params) { super(context, params); }
+        @NonNull @Override public Result doWork() {
             SharedPreferences p = getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
             String time = new SimpleDateFormat("dd/MM HH:mm", Locale.UK).format(new Date());
-            String log = "[" + time + "] AUTO-SCAN (07:30): Background scan completed & logged for training.\n" + p.getString("systemLog", "");
-            p.edit().putString("systemLog", log).apply();
+            p.edit().putString("systemLog", "[" + time + "] AUTO-SCAN (07:30): Background scan completed.\n" + p.getString("systemLog", "")).apply();
             return Result.success();
         }
     }
 
     public static class PostRaceAuditWorker extends Worker {
-        public PostRaceAuditWorker(@NonNull Context context, @NonNull WorkerParameters params) {
-            super(context, params);
-        }
-
-        @NonNull
-        @Override
-        public Result doWork() {
+        public PostRaceAuditWorker(@NonNull Context context, @NonNull WorkerParameters params) { super(context, params); }
+        @NonNull @Override public Result doWork() {
             SharedPreferences p = getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            int nextSamples = p.getInt("sampleCount", 4) + 1;
+            int next = p.getInt("sampleCount", 4) + 1;
             String time = new SimpleDateFormat("dd/MM HH:mm", Locale.UK).format(new Date());
-            String log = "[" + time + "] AUTO-AUDIT (+1Hr): Post-race results scored (" + nextSamples + "/50).\n" + p.getString("systemLog", "");
-            p.edit().putInt("sampleCount", nextSamples).putString("systemLog", log).apply();
+            p.edit().putInt("sampleCount", next).putString("systemLog", "[" + time + "] AUTO-AUDIT (+1Hr): Results scored (" + next + "/50).\n" + p.getString("systemLog", "")).apply();
             return Result.success();
         }
     }
